@@ -26,6 +26,7 @@ namespace Xamarin.Forms.Platform.UWP
 		Shell _shell;
 		Brush _flyoutBackdrop;
 		FlyoutBehavior _flyoutBehavior;
+		List<List<Element>> _flyoutGrouping;
 		ShellItemRenderer ItemRenderer { get; }
 		IShellController ShellController => (IShellController)_shell;
 
@@ -225,7 +226,6 @@ namespace Xamarin.Forms.Platform.UWP
 
 		protected virtual void UpdateFlyoutBackgroundColor()
 		{
-
 			if (_shell.FlyoutBackgroundColor == Color.Default)
 			{
 				object color = null;
@@ -258,7 +258,7 @@ namespace Xamarin.Forms.Platform.UWP
 
 			var shr = CreateShellHeaderRenderer(shell);
 			PaneCustomContent = shr;
-			MenuItemsSource = IterateItems();
+			UpdateMenuItemSource();
 			SwitchShellItem(shell.CurrentItem, false);
 			IsPaneOpen = Shell.FlyoutIsPresented;
 			ShellController.AddFlyoutBehaviorObserver(this);
@@ -319,17 +319,26 @@ namespace Xamarin.Forms.Platform.UWP
 
 		void OnStructureChanged(object sender, EventArgs e)
 		{
-			MenuItemsSource = IterateItems();
+			UpdateMenuItemSource();
 		}
 
 		void OnItemsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
-			MenuItemsSource = IterateItems();
+			UpdateMenuItemSource();
 		}
 
-		IEnumerable<object> IterateItems()
+		void UpdateMenuItemSource()
 		{
-			var groups = ((IShellController)Shell).GenerateFlyoutGrouping();
+			var newGrouping = ((IShellController)Shell).GenerateFlyoutGrouping();
+			if (_flyoutGrouping != newGrouping)
+			{
+				_flyoutGrouping = newGrouping;
+				MenuItemsSource = IterateItems(newGrouping);
+			}
+		}
+
+		IEnumerable<object> IterateItems(List<List<Element>> groups)
+		{
 			foreach (var group in groups)
 			{
 				if (group.Count > 0 && group != groups[0])

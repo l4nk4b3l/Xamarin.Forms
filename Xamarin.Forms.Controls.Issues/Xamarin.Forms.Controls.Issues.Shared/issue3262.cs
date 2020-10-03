@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
-using Xamarin.Forms.Internals;
+using System.Text.RegularExpressions;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.WindowsSpecific;
-using System.Text.RegularExpressions;
 
 #if UITEST
 using Xamarin.Forms.Core.UITests;
@@ -19,7 +19,7 @@ namespace Xamarin.Forms.Controls.Issues
 #endif
 	[Preserve(AllMembers = true)]
 	[Issue(IssueTracker.Github, 3262, "Adding Cookies ability to a WebView...")]
-	public class Issue3262 : TestContentPage // or TestMasterDetailPage, etc ...
+	public class Issue3262 : TestContentPage // or TestFlyoutPage, etc ...
 	{
 		string _currentCookieValue;
 
